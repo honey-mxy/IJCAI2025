@@ -1,66 +1,77 @@
+# <font size=6>DMAC</font>
+This repository contains data and code for the paper 《Enhancing Robustness of Multi-agent Communication by Decentralization-Oriented Adversarial Training》
+
+# Overview
+
+Borrow from the idea of `fighting fire with fire', we propose DMAC which employs the adversarial training strategy to enable the training of more robust communication policies capable of resisting potential adversarial attacks. 
+
+We make experimental evaluation of effectiveness of DMAC on four environments (StarCraft II, Coop Navi, Predator-Prey, Traffic Junction) with promising performance, outperforming the SOTA baseline.
+
+The overall structure is shown in the figure below:
+![图片](images/overview.png)
+
+The key step is identifying the critical communication channels, which is shown in the figure below:
+![图片](images/adv.png)
 
 
-## Corresponding Papers
-- [IQL: Independent Q-Learning](https://arxiv.org/abs/1511.08779)
-- [QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1803.11485)
-- [Value-Decomposition Networks For Cooperative Multi-Agent Learning](https://arxiv.org/abs/1706.05296)
-- [Counterfactual Multi-Agent Policy Gradients](https://arxiv.org/abs/1705.08926)
-- [QTRAN: Learning to Factorize with Transformation for Cooperative Multi-Agent Reinforcement Learning](https://arxiv.org/abs/1905.05408)
-- [Learning Multiagent Communication with Backpropagation](https://arxiv.org/abs/1605.07736)
-- [From Few to More: Large-scale Dynamic Multiagent Curriculum Learning](https://arxiv.org/abs/1909.02790?context=cs.MA)
-- [Multi-Agent Game Abstraction via Graph Attention Neural Network](https://arxiv.org/abs/1911.10715)
-- [MAVEN: Multi-Agent Variational Exploration](https://arxiv.org/abs/1910.07483)
-
-## Requirements
-Use `pip install -r requirements.txt` to install the following requirements:
-
-- matplotlib
-- torch
-- [SMAC](https://github.com/oxwhirl/smac)
-- [pysc2](https://github.com/deepmind/pysc2)
-
-## Acknowledgement
-
-+ [SMAC](https://github.com/oxwhirl/smac)
-+ [pymarl](https://github.com/oxwhirl/pymarl)
+# Environment Setup
+## Installation instructions
 
 
-## TODO List
+Install Python packages for four envs:
 
-- [x] Add CUDA option
-- [x] DyMA-CL
-- [x] G2ANet
-- [x] MAVEN
-- [ ] VBC
-- [ ] Other SOTA MARL algorithms
-- [ ] Update results on other maps
-
-## Quick Start
 
 ```shell
-$ python main.py --map=3m --alg=qmix
+# For StarCraft II
+conda create -n MAS_Com python=3.8
+conda activate MAS_Com
+
+bash install_dependecies.sh
+bash install_sc2.sh
 ```
 
-Directly run the `main.py`, then the algorithm will start **training** on map `3m`. **Note** CommNet and G2ANet need an external training algorithm, so the name of them are like `reinforce+commnet` or `central_v+g2anet`, all the algorithms we provide are written in `./common/arguments.py`.
+```shell
+# For Coop Navi and Predator-Prey
+conda create -n MAS_Coo python=3.6.5
+conda activate MAS_Coo
 
-If you just want to use this project for demonstration, you should set `--evaluate=True --load_model=True`. 
+pip install torch == 1.1.0
+git clone https://github.com/openai/multiagent-particle-envs.git
+cd multiagent-particle-envs
+pip install -e .
 
-The running of DyMA-CL is independent from others because it requires different environment settings, so we put it on another project. For more details, please read [DyMA-CL documentation](https://github.com/starry-sky6688/DyMA-CL).
+```
 
-## Result
+```shell
+# For Traffic Junction
+conda create -n MAS_TJ python=3.6.5
+conda activate MAS_TJ
 
-We independently train these algorithms for 8 times and take the mean of the 8 independent results, and we evaluate them for 20 episodes every 100 training steps. All of the results are saved in  `./result`.
-Results on other maps are still in training, we will update them later.
+pip install -r requirements.txt
 
-### 1. Mean Win Rate of 8 Independent Runs on `3m --difficulty=7(VeryHard)`
-<div align=center><img width = '600' height ='300' src ="https://github.com/starry-sky6688/StarCraft/blob/master/result/overview_3m.png"/></div>
+```
 
-### 2. Mean Win Rate of 8 Independent Runs on `8m --difficulty=7(VeryHard)`
-<div align=center><img width = '600' height ='300' src ="https://github.com/starry-sky6688/StarCraft/blob/master/result/overview_8m.png"/></div>
+## Command Line Tool
 
-### 3. Mean Win Rate of 8 Independent Runs on `2s3z --difficulty=7(VeryHard)`
-<div align=center><img width = '600' height ='300' src ="https://github.com/starry-sky6688/StarCraft/blob/master/result/overview_2s3z.png"/></div>
+**Run an experiment**
 
-## Replay
+```shell
+$ python3 main.py --map=1c3s5z --evaluate=True --load_model=True
+```
 
-If you want to see the replay, make sure the `replay_dir` is an absolute path, which can be set in `./common/arguments.py`. Then the replays of each evaluation will be saved, you can find them in your path.
+# Results
+
+### 1. Robustness`
+![图片](images/robust.png)
+
+### 2. Performance`
+![图片](images/perform.png)
+
+### 3. Decentralization`
+![图片](images/decentralization.png)
+
+# Reference
+- https://github.com/oxwhirl/smac
+- https://github.com/hijkzzz/pymarl2/
+- https://github.com/openai/multiagent-particle-envs
+- https://github.com/openai/maddpg
